@@ -6,6 +6,8 @@
 package trello
 
 type Checklist struct {
+	client *Client
+
 	ID         string      `json:"id"`
 	Name       string      `json:"name"`
 	IDBoard    string      `json:"idBoard,omitempty"`

@@ -120,6 +120,15 @@ func (c *Card) Update(args Arguments) error {
 	return c.client.Put(path, args, c)
 }
 
+func (c *Card) GetChecklists(args Arguments) (checklists []*Checklist, err error) {
+	path := fmt.Sprintf("cards/%s/checklists", c.ID)
+	err = c.client.Get(path, args, &checklists)
+	for i := range checklists {
+		checklists[i].client = c.client
+	}
+	return
+}
+
 func (c *Client) CreateCard(card *Card, extraArgs Arguments) error {
 	path := "cards"
 	args := Arguments{
