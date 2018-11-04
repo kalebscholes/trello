@@ -26,6 +26,17 @@ func (l *List) CreatedAt() time.Time {
 	return t
 }
 
+func (c *Client) CreateList(args Arguments) (list *List, err error) {
+	err = c.Get("lists", args, &list)
+	if list != nil {
+		list.client = c
+		for i := range list.Cards {
+			list.Cards[i].client = c
+		}
+	}
+	return
+}
+
 func (c *Client) GetList(listID string, args Arguments) (list *List, err error) {
 	path := fmt.Sprintf("lists/%s", listID)
 	err = c.Get(path, args, &list)
