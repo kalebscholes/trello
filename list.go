@@ -26,15 +26,25 @@ func (l *List) CreatedAt() time.Time {
 	return t
 }
 
-func (c *Client) CreateList(args Arguments) (list *List, err error) {
-	err = c.Get("lists", args, &list)
-	if list != nil {
-		list.client = c
-		for i := range list.Cards {
-			list.Cards[i].client = c
-		}
+func (c *Client) CreateList(list *List, extraArgs Arguments) error {
+	args := Arguments{
+		"name":    list.Name,
+		"idBoard": list.IDBoard,
 	}
-	return
+
+	if pos, ok := extraArgs["pos"]; ok {
+		args["pos"] = pos
+	}
+
+	if idListSource, ok := extraArgs["idListSource"]; ok {
+		args["idListSource"] = idListSource
+	}
+
+	err := c.Post("lists", args, &list)
+	if err != nil {
+		list.client = c
+	}
+	return err
 }
 
 func (c *Client) GetList(listID string, args Arguments) (list *List, err error) {
